@@ -1,269 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Conversa com Hartmann</title>
-<style>
-:root{--hd:#008069;--hdt:#fff;--bg:#efeae2;--out:#d9fdd3;--in:#fff;--tx:#111b21;--sub:#667781;--chip:#fff3c5;--chipt:#54656f;--day:#fff;--bar:#f0f2f5;--inp:#fff;--ok:#53bdeb;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#202c33;--bg:#0b141a;--out:#005c4b;--in:#202c33;--tx:#e9edef;--sub:#8696a0;--chip:#182229;--chipt:#ffd279;--day:#182229;--bar:#202c33;--inp:#2a3942}}
-:root[data-theme="dark"]{--hd:#202c33;--bg:#0b141a;--out:#005c4b;--in:#202c33;--tx:#e9edef;--sub:#8696a0;--chip:#182229;--chipt:#ffd279;--day:#182229;--bar:#202c33;--inp:#2a3942}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--tx);font:15px/1.35 "Segoe UI",Helvetica,Arial,sans-serif;display:flex;justify-content:center}
-.app{width:100%;max-width:620px;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative}
-header{background:var(--hd);color:var(--hdt);display:flex;align-items:center;gap:12px;padding:10px 14px;flex:none}
-header .av{width:40px;height:40px;border-radius:50%;background:#9aa7ae;display:grid;place-items:center;font-weight:600;font-size:18px;color:#fff}
-header b{display:block;font-weight:600;font-size:16px}
-header small{opacity:.8;font-size:12px}
-header button{margin-left:auto;background:none;border:0;color:inherit;font-size:20px;cursor:pointer;padding:6px}
-header button:focus-visible{outline:2px solid #fff;border-radius:6px}
-main{flex:1;overflow-y:auto;padding:10px 8px 14px;display:flex;flex-direction:column;background-image:radial-gradient(circle at 20% 30%,rgba(127,127,127,.06) 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,rgba(127,127,127,.06) 0 2px,transparent 3px);background-size:46px 46px}
-.chip{align-self:center;background:var(--chip);color:var(--chipt);font-size:12px;padding:6px 10px;border-radius:8px;margin:6px 24px 10px;text-align:center;box-shadow:0 1px 1px rgba(0,0,0,.12)}
-.day{align-self:center;background:var(--day);color:var(--sub);font-size:12.5px;padding:5px 12px;border-radius:8px;margin:4px 0 10px;box-shadow:0 1px 1px rgba(0,0,0,.12)}
-.m{max-width:80%;padding:6px 8px 5px 9px;border-radius:8px;margin-top:2px;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.13);word-wrap:break-word;overflow-wrap:anywhere}
-.m.in{align-self:flex-start;background:var(--in);border-top-left-radius:0}
-.m.out{align-self:flex-end;background:var(--out);border-top-right-radius:0}
-.m.in.c{border-top-left-radius:8px}.m.out.c{border-top-right-radius:8px}
-.m.first{margin-top:9px}
-.t{float:right;margin:7px 0 -3px 10px;font-size:11px;color:var(--sub);display:inline-flex;gap:3px;align-items:center}
-.out .t svg{width:16px;height:11px;fill:none;stroke:var(--ok);stroke-width:1.8}
-.media{display:flex;align-items:center;gap:10px;min-width:190px;padding-top:2px}
-.play{width:34px;height:34px;border-radius:50%;background:var(--sub);display:grid;place-items:center;flex:none;color:var(--bg);font-size:13px}
-.wave{flex:1;height:22px;background:repeating-linear-gradient(90deg,var(--sub) 0 2px,transparent 2px 5px);-webkit-mask:linear-gradient(0deg,#000,#000);opacity:.55;border-radius:2px}
-.img{width:230px;max-width:100%;height:150px;border-radius:6px;background:linear-gradient(135deg,#9aa7ae,#5f6f78);display:grid;place-items:center;color:#fff;font-size:13px;margin-bottom:2px}
-footer{background:var(--bar);padding:8px 10px;display:flex;gap:8px;align-items:center;flex:none}
-footer div{flex:1;background:var(--inp);color:var(--sub);padding:10px 14px;border-radius:22px;font-size:14px}
-footer span{width:40px;height:40px;border-radius:50%;background:#00a884;display:grid;place-items:center;color:#fff}
-</style>
-</head>
-<body>
-<div class="app">
-<header><div class="av">H</div><div><b>Hartmann</b><small>online</small></div><button id="th" aria-label="Alternar tema">◐</button></header>
-<main id="chat"></main>
-<footer><div>Mensagem</div><span aria-hidden="true">🎤</span></footer>
-</div>
-<script>
-const RAW=`h|11:15|Hm tendi
-h|11:15|Kk
-g|11:17|Vai que eu não me segure
-h|11:24|Segura sim
-h|11:24|Vc consegue
-g|11:26|A rafa não veio hoje
-h|11:36|Bom saber
-h|11:36|Hj eu vou na cidade tomar vacina
-h|11:36|Mas logo eu volto
-g|11:40|Que pena
-h|11:45|Pse
-h|11:45|@a
-h|11:46|@a
-g|11:46|Entendi
-g|11:47|Agora ?
-h|11:47|@a
-h|11:47|Não
-h|11:48|Depois
-g|11:52|Tá bom
-h|11:54|@a
-h|11:54|@a
-g|11:55|Não
-g|11:55|Vamos ver kkk
-g|11:58|Se você conseguir 12 e 35
-g|11:58|Não sei Vamos ver
-h|12:01|Acho q sim
-h|12:01|Já tô aqui na farmácia
-h|12:05|@i
-h|12:05|Aain minha bunda
-h|12:05|Kkk
-g|12:07|Kkkk
-g|12:08|Depois dou um beijo pra sarar kkk
-h|12:08|Já tomei
-h|12:08|Kkkk
-h|12:09|Tô voltando pra empresa
-h|12:09|Logo tô ai
-h|12:21|Já tô chegando
-h|12:30|Já tô Aqui
-h|12:30|No banheiro
-g|12:32|Eu vi você passando
-h|12:32|Eita kkk
-h|12:32|Onde vc tá?
-g|12:32|Na sala
-h|12:33|Ata
-g|12:33|O peste do meu irmão tá ali do lado
-h|12:33|Entendi
-h|12:33|Vixi
-h|12:33|Moio os corre kkkk
-g|12:33|Já chamei ele pra sala
-g|12:33|Mas nada
-h|12:33|Kkkkkk
-g|12:34|Da pra ver ele?
-h|12:34|null
-h|12:34|Daqui não
-h|12:35|Se acha muito arriscado deixa pra outro dia
-g|12:35|Posso ir ?
-h|12:36|Se acha seguro
-h|12:36|Pode vir
-h|12:36|Mas olha pra trás antes de entrar
-h|12:36|Kkkk
-h|12:38|Pode sair
-h|12:38|Rápido
-h|12:39|Tava difícil abrir a porta?kkkkkkk
-h|12:39|E Eu rindo lá fora
-g|12:39|Sim kkkk
-h|12:40|Me falta tamanho pra alcançar e te beijar melhor
-h|12:40|Mas caralho
-h|12:40|Teu beijo é bom pra caramba
-h|12:40|Bom pra caralho
-h|12:41|Melhor ainda se puder deitar e deixar o clima fluir
-h|12:41|😏
-g|12:42|Eu achei que eu tinha decepcionado
-h|12:42|Nunca
-h|12:42|Caralho
-h|12:42|Teu beijo é bom pra caralhooo
-h|12:42|Desculpa as palavras
-h|12:42|Mas eu amei
-g|12:43|Eu Eu também amei
-g|12:43|Você é perfeita kkk
-h|12:43|Vc q é
-h|12:44|Gostou mesmo?
-h|12:44|🤤
-h|12:44|Quero maiss
-h|12:44|Muito mais
-g|12:44|Que corpo delicioso
-g|12:44|Foi pouco tempo mas foi o melhor kkk
-h|12:44|Tirando a parte q eu tava na ponta do pé e quase caí
-h|12:44|Cê me pegou de jeito
-h|12:44|Fiquei molinha
-h|12:44|Sério mesmo?
-g|12:45|Eu ia te colocar no braço kkk
-h|12:45|Eu senti q eu não fui tão bem quanto eu sou
-h|12:45|Acho q fiquei tensa de medo kkk
-h|12:45|Ata kkkkk
-g|12:46|Sério gostei muito você é perfeita
-h|12:46|Você também
-h|12:46|Boca gostosa
-g|12:46|Eu achei que eu não mandei tão bem fiquei até com medo de ter te decepcionado
-h|12:47|Jamais
-h|12:47|Foi muito bom
-h|12:47|Muito mesmo
-g|12:48|Quero mais tempo com você kkkk
-h|12:48|Bem hj q vim com uma meia calça por baixo
-h|12:48|Kkkk
-h|12:48|Pq passei frio ontem
-h|12:48|Minha bunda tava espremida
-h|12:48|Kkkkl
-h|12:48|Apertada dms
-h|12:48|Kkkm
-h|12:48|Eu tbm quero
-h|12:48|Quero muito 😏😈
-g|12:49|Uma bunda delicia kkkk
-h|12:50|Obrigada por ter ido
-h|12:50|Eu tava com vontade de vc🤤
-h|12:50|Agora tô mais ainda
-h|12:50|😈
-g|12:51|Você acha que eu ia perder essa chance?
-g|12:51|Quem sabe quando eu ia ter de novo kkk
-h|12:53|Vc é de atitude
-h|12:53|Amoo isso
-h|12:54|Gosteii muito q vc tem iniciativa 🤤
-h|12:54|Isso me encanta
-h|12:54|Me dá tesão
-g|12:55|Já venho passando vontade faz tempo kkk essa oportunidade eu não ia perder kkkk
-g|12:56|Se demora-se mais um pouco eu ia arrancar sua roupa
-h|12:56|Aai que delícia
-h|12:56|E deu tão certinho
-h|12:56|Ninguém desconfia jamais kkk
-h|12:56|Se tivesse mais tempo eu deixava
-h|12:56|🤤
-g|12:57|Obrigado ei gostei muito fiquei com o seu cheiro
-g|13:01|Amei a sua altura
-h|13:02|Sério mesmo?
-h|13:02|Meu cheiro ficou a maioria no meu cachecol
-h|13:02|Klkk
-h|13:02|Bem Baixinha kkkkk
-h|13:02|Gostou até da altura?
-h|13:03|Aaai gentii
-h|13:03|Vc é perfeito
-g|13:03|De tudo
-g|13:03|Amei tudo
-h|13:03|Somos 2 então
-h|13:03|Pq eu também
-h|13:03|Achei vc perfeito
-h|13:04|Voltei correndo só pra ter certeza q ia dar tempo de te ver
-g|13:05|Hoje foi meu melhor dia
-h|13:05|Eu tbm fiquei bem feliz
-h|13:05|Espero que hj dê pra gente conversar na saída
-h|13:05|Tomara
-g|13:06|Eu ia adora
-h|13:06|Eu tbm
-h|13:06|😊
-g|13:06|Conversar com você só na troca de olhares kkk
-h|13:06|Exatamente assim
-h|13:06|É muito gostosa a sensação de sigilo
-h|13:06|De que ninguém desconfia oq a gente faz no off
-h|13:07|🤭
-g|13:07|Ótimo isso
-g|13:07|Eu não preciso tá me mostrando pra ninguém
-g|13:08|Quero mais
-g|13:08|Kkkk
-h|13:09|Isso que admiro em vc
-h|13:09|Conseguiu oq os outros jamais conseguiram
-h|13:11|A gente se arriscou bastante pela força da vontade
-h|13:12|@a
-h|13:12|@a
-g|13:19|Sério foi mil vezes melhor do que eu imaginava seu cheiro, seu corpo, sua altura o gosto do beijo Nossa um sonho
-h|13:28|Que delícia ouvir isso 🥰
-h|13:28|Vc também superou minhas expectativas
-h|13:28|Vc é do tipo de cara que é quietinho bem na sua
-h|13:28|Mais tem mais atitude que qualquer um outro
-h|13:29|Vc tem pegada
-h|13:29|Toma iniciativa
-h|13:29|Me surpreendeu pra caramba
-h|13:29|Sério
-h|13:29|Fiquei impressionada
-h|13:29|Gostei de ver viu 😈🥰
-g|13:53|Acredita que eu só sorrindo até pro vento kkkk
-g|13:53|Sei lá tô feliz kkk
-h|13:55|Eu também 🤩
-h|13:55|São 2 então
-h|13:55|Estamos parecendo 2 adolescentes
-h|13:55|Ahahaja
-h|13:55|Que delícia essa sensação
-g|13:56|Verdade kkk que química boa kkk
-h|13:56|Fazia tanto tempo q não sentia isso
-h|13:56|Química Ma-ra-vi-lho-sa
-h|13:56|🤤❤️
-g|14:12|Baixou o espírito de adolescente é capaz de eu te ver e cair numa crise  de risos kkk 🤣🤣🤣
-h|14:19|Se vc começar rir na minha frente eu falo uma piada  pra ninguém perceber kkkkkkk
-h|14:19|E fica tudo certo
-h|14:19|A gente ri juntos daí kkkk`;
-const chat=document.getElementById('chat');
-const mk=(c,t)=>{const e=document.createElement(t||'div');e.className=c;return e};
-const add=(e,txt)=>{e.textContent=txt;chat.appendChild(e)};
-add(mk('chip'),'🔒 As mensagens e ligações são protegidas com a criptografia de ponta a ponta. Somente as pessoas que fazem parte da conversa podem ler, ouvir e compartilhar esse conteúdo.');
-add(mk('day'),'30 de maio de 2025');
-const CHECK='<svg viewBox="0 0 18 12"><path d="M1 6.5l3.5 3.5L11 2M7 9.5l1 1L16 2"/></svg>';
-let prev=null,au=0,im=0;
-RAW.split('\n').forEach(l=>{
-  const [s,time,...r]=l.split('|');const txt=r.join('|');
-  const m=mk('m '+(s==='g'?'out':'in')+(prev===s?' c':' first'));
-  if(txt==='@a'){
-    au++;
-    m.innerHTML='<div class="media"><div class="play">▶</div><div class="wave"></div></div>';
-    m.title='Áudio '+au;
-  }else if(txt==='@i'){
-    m.innerHTML='<div class="img">📷 Foto</div>';
-  }else{
-    const p=document.createElement('span');p.textContent=txt;m.appendChild(p);
-  }
-  const t=mk('t','span');t.innerHTML=time+(s==='g'?CHECK:'');
-  m.appendChild(t);chat.appendChild(m);prev=s;
-});
-chat.scrollTop=0;
-document.getElementById('th').onclick=()=>{
-  const d=document.documentElement,dark=getComputedStyle(d).getPropertyValue('--bg').trim()==='#0b141a';
-  d.setAttribute('data-theme',dark?'light':'dark');
-};
-</script>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+		<title>Conversa do WhatsApp</title>
+		<style>
+			:root{--hd:#008069;--hdt:#fff;--bg:#efeae2;--out:#d9fdd3;--in:#fff;--tx:#111b21;--sub:#667781;--chip:#fff3c5;--chipt:#54656f;--day:#fff;--bar:#f0f2f5;--inp:#fff;--ok:#53bdeb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+			@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hd:#202c33;--bg:#0b141a;--out:#005c4b;--in:#202c33;--tx:#e9edef;--sub:#8696a0;--chip:#182229;--chipt:#ffd279;--day:#182229;--bar:#202c33;--inp:#2a3942}}
+			:root[data-theme="dark"]{--hd:#202c33;--bg:#0b141a;--out:#005c4b;--in:#202c33;--tx:#e9edef;--sub:#8696a0;--chip:#182229;--chipt:#ffd279;--day:#182229;--bar:#202c33;--inp:#2a3942}
+			*{box-sizing:border-box}
+			html,body{height:100%;margin:0}
+			body{background:var(--bg);color:var(--tx);font:15px/1.35 "Segoe UI",Helvetica,Arial,sans-serif;display:flex;justify-content:center}
+			.app{width:100%;max-width:620px;height:100%;display:flex;flex-direction:column;background:var(--bg)}
+			header{background:var(--hd);color:var(--hdt);display:flex;align-items:center;gap:6px;padding:10px 10px 10px 14px;flex:none}
+			header .av{width:40px;height:40px;border-radius:50%;background:#9aa7ae;display:grid;place-items:center;font-weight:600;font-size:18px;color:#fff;margin-right:6px;flex:none}
+			header .av{overflow:hidden}
+			header .av img{width:100%;height:100%;object-fit:cover;display:block}
+			header .nm{min-width:0;flex:1}
+			header b{display:block;font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+			header small{opacity:.8;font-size:12px}
+			header button{background:none;border:0;color:inherit;font-size:19px;cursor:pointer;padding:6px 7px}
+			header button:focus-visible,.btn:focus-visible{outline:2px solid #fff;outline-offset:1px;border-radius:6px}
+			main{flex:1;overflow-y:auto;padding:10px 8px 14px;display:flex;flex-direction:column;background-image:radial-gradient(circle at 20% 30%,rgba(127,127,127,.06) 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,rgba(127,127,127,.06) 0 2px,transparent 3px);background-size:46px 46px}
+			.chip{align-self:center;background:var(--chip);color:var(--chipt);font-size:12px;padding:6px 10px;border-radius:8px;margin:6px 24px 10px;text-align:center;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+			.day{align-self:center;background:var(--day);color:var(--sub);font-size:12.5px;padding:5px 12px;border-radius:8px;margin:10px 0;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+			.m{max-width:80%;padding:6px 8px 5px 9px;border-radius:8px;margin-top:2px;box-shadow:0 1px 1px rgba(0,0,0,.13);overflow-wrap:anywhere}
+			.m span.x{white-space:pre-wrap}
+			.m.in{align-self:flex-start;background:var(--in);border-top-left-radius:0}
+			.m.out{align-self:flex-end;background:var(--out);border-top-right-radius:0}
+			.m.in.c{border-top-left-radius:8px}.m.out.c{border-top-right-radius:8px}
+			.m.first{margin-top:9px}
+			.t{float:right;margin:7px 0 -3px 10px;font-size:11px;color:var(--sub);display:inline-flex;gap:3px;align-items:center}
+			.out .t svg{width:16px;height:11px;fill:none;stroke:var(--ok);stroke-width:1.8}
+			.media{display:flex;align-items:center;gap:10px;min-width:200px;padding-top:2px}
+			.play{width:34px;height:34px;border-radius:50%;background:var(--sub);display:grid;place-items:center;flex:none;color:var(--bg);font-size:13px;cursor:pointer;border:0}
+			.pg{flex:1;display:flex;flex-direction:column;gap:5px}
+			.bar{height:4px;border-radius:2px;background:rgba(127,127,127,.35);cursor:pointer;position:relative}
+			.bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--sub);border-radius:2px}
+			.dur{font-size:11px;color:var(--sub)}
+			.img{width:230px;max-width:100%;border-radius:6px;display:block;cursor:zoom-in;margin-bottom:2px;background:#9aa7ae}
+			video.img{cursor:auto}
+			.miss,.file{font-size:13px;color:var(--sub)}
+			.file{color:inherit}
+			#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;place-items:center;z-index:9;cursor:zoom-out}
+			#lb img{max-width:96%;max-height:92%}
+			.start{margin:auto;text-align:center;max-width:380px;padding:24px;background:var(--day);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+			.start h1{font-size:18px;margin:0 0 8px}
+			.start p{margin:6px 0;color:var(--sub);font-size:14px}
+			.btn{margin-top:12px;background:#00a884;color:#fff;border:0;border-radius:22px;padding:10px 20px;font-size:15px;cursor:pointer}
+			.start.drag{outline:2px dashed #00a884}
+			footer{background:var(--bar);padding:8px 10px;display:flex;gap:8px;align-items:center;flex:none}
+			footer div{flex:1;background:var(--inp);color:var(--sub);padding:10px 14px;border-radius:22px;font-size:14px}
+			footer span{width:40px;height:40px;border-radius:50%;background:#00a884;display:grid;place-items:center;color:#fff}
+		</style>
+	</head>
+	<body>
+		<div class="app">
+			<header>
+				<div class="av" id="av">?</div>
+				<div class="nm"><b id="nm">Conversa</b><small id="st">carregando…</small></div>
+				<button id="sw" title="Trocar quem é &quot;você&quot;" aria-label="Trocar lados">⇄</button>
+				<button id="op" title="Abrir outro arquivo .txt" aria-label="Abrir arquivo">📂</button>
+				<button id="th" title="Alternar tema" aria-label="Alternar tema">◐</button>
+			</header>
+			<main id="chat"></main>
+			<footer><div>Mensagem</div><span aria-hidden="true">🎤</span></footer>
+		</div>
+		<input type="file" id="fi" accept=".txt,text/plain" hidden>
+		<script>
+			/*P*/
+			const LRM=/[\u200e\u200f\u202a-\u202e]/g;
+			const LINE=/^(\d{1,2})\/(\d{1,2})\/(\d{2,4}),? (\d{1,2}):(\d{2})(?: da (manhã|tarde|noite|madrugada))? - ([\s\S]*)$/;
+			function parseChat(txt){
+				const msgs=[];
+				txt.replace(/^\uFEFF/,'').split(/\r?\n/).forEach(raw=>{
+					const l=raw.replace(/^[\u200e\u200f]+/,'');
+					const m=l.match(LINE);
+					if(m){
+						let [,d,mo,y,h,mi,per,rest]=m;h=+h;y=+y;if(y<100)y+=2000;
+						if(per==='tarde'||per==='noite'){if(h<12)h+=12}else if(per&&h===12)h=0;
+						const o={date:new Date(y,mo-1,+d),time:String(h).padStart(2,'0')+':'+mi,who:null,text:rest};
+						const s=rest.match(/^([^:]{1,60}?): ([\s\S]*)$/);
+						if(s){o.who=s[1];o.text=s[2]}
+						const a=o.text.replace(LRM,'').match(/^(.+?) \(arquivo anexado\)$/);
+						if(a)o.file=a[1].trim();
+						msgs.push(o);
+						}else if(msgs.length){
+						msgs[msgs.length-1].text+='\n'+raw;
+					}
+				});
+				return msgs;
+			}
+			/*P*/
+			const PASTA='midia/';
+			const TIPO=n=>/\.(opus|ogg|oga|mp3|m4a|aac|wav|amr)$/i.test(n)?'a':/\.(jpe?g|png|gif|webp|bmp)$/i.test(n)?'i':/\.(mp4|3gp|mov|webm|mkv)$/i.test(n)?'v':'f';
+			const chat=document.getElementById('chat'),$=id=>document.getElementById(id);
+			const mk=(c,t)=>{const e=document.createElement(t||'div');e.className=c;return e};
+			const CHECK='<svg viewBox="0 0 18 12"><path d="M1 6.5l3.5 3.5L11 2M7 9.5l1 1L16 2"/></svg>';
+			let tocando=null,S={msgs:[],people:[],me:null,nome:''};
+			const fmt=x=>isFinite(x)?Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0'):'0:00';
+			const src=n=>PASTA+encodeURIComponent(n);
+			
+			function player(nome){
+				const w=mk('media'),a=new Audio();a.preload='metadata';a.src=src(nome);
+				const b=mk('play','button');b.textContent='▶';b.setAttribute('aria-label','Reproduzir áudio');
+				const pg=mk('pg'),bar=mk('bar'),fill=document.createElement('i'),d=mk('dur');
+				bar.appendChild(fill);d.textContent='0:00';pg.append(bar,d);w.append(b,pg);
+				a.onloadedmetadata=()=>d.textContent=fmt(a.duration);
+				a.ontimeupdate=()=>{fill.style.width=(a.currentTime/a.duration*100||0)+'%';d.textContent=fmt(a.currentTime)};
+				a.onended=()=>{b.textContent='▶';fill.style.width='0';d.textContent=fmt(a.duration)};
+				a.onerror=()=>{w.className='miss';w.textContent='Áudio não encontrado: '+PASTA+nome};
+				a.onpause=()=>{b.textContent='▶'};
+				b.onclick=()=>{if(a.paused){if(tocando&&tocando!==a)tocando.pause();a.play();tocando=a;b.textContent='⏸'}else a.pause()};
+				bar.onclick=e=>{const r=bar.getBoundingClientRect();if(a.duration)a.currentTime=(e.clientX-r.left)/r.width*a.duration};
+				return w;
+			}
+			function photo(nome){
+				const i=new Image();i.className='img';i.alt='Foto';i.src=src(nome);
+				i.onerror=()=>{const e=mk('miss');e.textContent='Imagem não encontrada: '+PASTA+nome;i.replaceWith(e)};
+				i.onclick=()=>{lb.firstChild.src=i.src;lb.style.display='grid'};
+				return i;
+			}
+			function video(nome){
+				const v=mk('img','video');v.controls=true;v.preload='metadata';v.src=src(nome);
+				v.onerror=()=>{const e=mk('miss');e.textContent='Vídeo não encontrado: '+PASTA+nome;v.replaceWith(e)};
+				return v;
+			}
+			function anexo(nome){
+				const a=mk('file','a');a.href=src(nome);a.target='_blank';a.rel='noopener';a.textContent='📎 '+nome;return a;
+			}
+			const EXTS=['jpg','jpeg','png','webp'];
+			const slug=n=>n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+			let avTok=0;
+			function avatar(nome){
+				const tok=++avTok;
+				const lista=[];
+				EXTS.forEach(e=>lista.push('avatar-'+slug(nome)+'.'+e));
+				EXTS.forEach(e=>lista.push('avatar.'+e));
+				(function tenta(i){
+					if(i>=lista.length||tok!==avTok)return;
+					const im=new Image();im.alt='';
+					im.onload=()=>{if(tok===avTok){$('av').textContent='';$('av').appendChild(im)}};
+					im.onerror=()=>tenta(i+1);
+					im.src=src(lista[i]);
+				})(0);
+			}
+			const lb=mk('');lb.id='lb';lb.appendChild(new Image());lb.onclick=()=>lb.style.display='none';document.body.appendChild(lb);
+			
+			function render(){
+				chat.innerHTML='';tocando=null;
+				const contato=S.people.find(p=>p!==S.me)||S.people[0]||'Conversa';
+				$('nm').textContent=contato;$('av').textContent=contato.trim().charAt(0).toUpperCase()||'?';
+				$('st').textContent=S.msgs.length+' mensagens';avatar(contato);document.title='Conversa com '+contato;
+				let prev=null,dia=null;
+				S.msgs.forEach(g=>{
+					const k=g.date.getTime();
+					if(k!==dia){dia=k;prev=null;const d=mk('day');d.textContent=g.date.toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});chat.appendChild(d)}
+					if(!g.who){const c=mk('chip');c.textContent=g.text;chat.appendChild(c);prev=null;return}
+					const out=g.who===S.me;
+					const m=mk('m '+(out?'out':'in')+(prev===g.who?' c':' first'));
+					if(g.file){const t=TIPO(g.file);m.appendChild(t==='a'?player(g.file):t==='i'?photo(g.file):t==='v'?video(g.file):anexo(g.file))}
+					else if(/^<M[íi]dia oculta>$/.test(g.text.trim())){const e=mk('miss');e.textContent='Mídia omitida na exportação';m.appendChild(e)}
+					else{const p=mk('x','span');p.textContent=g.text;m.appendChild(p)}
+					const t=mk('t','span');t.innerHTML=g.time+(out?CHECK:'');m.appendChild(t);
+					chat.appendChild(m);prev=g.who;
+				});
+				chat.scrollTop=0;
+			}
+			function carregar(txt,nome){
+				const msgs=parseChat(txt);
+				if(!msgs.some(m=>m.who)){alert('Não encontrei mensagens neste arquivo. Use o .txt exportado do WhatsApp (Android).');return false}
+				const people=[];msgs.forEach(m=>{if(m.who&&!people.includes(m.who))people.push(m.who)});
+				let me=null;
+				try{const s=localStorage.getItem('wa-me');if(people.includes(s))me=s}catch(e){}
+				if(!me){
+					const c=(nome||'').match(/ com (.+?)(?:\.txt)?$/i);
+					const contato=c&&people.find(p=>p.toLowerCase()===c[1].trim().toLowerCase());
+					me=contato?people.find(p=>p!==contato)||people[0]:people[1]||people[0];
+				}
+				S={msgs,people,me,nome};render();return true;
+			}
+			$('sw').onclick=()=>{
+				if(S.people.length<2)return;
+				const i=S.people.indexOf(S.me);S.me=S.people[(i+1)%S.people.length];
+				try{localStorage.setItem('wa-me',S.me)}catch(e){}render();
+			};
+			$('th').onclick=()=>{
+				const d=document.documentElement,dark=getComputedStyle(d).getPropertyValue('--bg').trim()==='#0b141a';
+				d.setAttribute('data-theme',dark?'light':'dark');
+			};
+			const fi=$('fi');$('op').onclick=()=>fi.click();
+			const lerArquivo=f=>f&&f.text().then(t=>carregar(t,f.name));
+			fi.onchange=()=>lerArquivo(fi.files[0]);
+			document.addEventListener('dragover',e=>e.preventDefault());
+			document.addEventListener('drop',e=>{e.preventDefault();lerArquivo(e.dataTransfer.files[0])});
+			
+			function inicio(){
+				$('st').textContent='aguardando arquivo';
+				const s=mk('start');
+				s.innerHTML='<h1>Abrir conversa</h1><p>Não consegui ler o <b>conversa.txt</b> automaticamente. Navegadores bloqueiam isso quando a página é aberta direto do disco.</p><p>Escolha o arquivo .txt exportado do WhatsApp, ou arraste-o para cá.</p>';
+				const b=mk('btn','button');b.textContent='Escolher arquivo .txt';b.onclick=()=>fi.click();s.appendChild(b);
+				chat.appendChild(s);
+			}
+			async function boot(){
+				for(const n of ['conversa.txt']){
+					try{const r=await fetch(n);if(r.ok){const t=await r.text();if(carregar(t,n))return}}catch(e){}
+				}
+				inicio();
+			}
+			boot();
+		</script>
+	</body>
 </html>
